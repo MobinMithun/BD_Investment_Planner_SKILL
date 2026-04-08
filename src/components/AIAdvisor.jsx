@@ -11,46 +11,104 @@ export default function AIAdvisor() {
   ];
 
   return (
-    <div className="glass card">
-      <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-        <Sparkles className="text-emerald-400" size={20} />
-        AI Advisor (Claude Powered)
-      </h3>
-
-      <div className="bg-slate-900/50 rounded-xl p-6 mb-6 border border-slate-700/30 min-h-[200px] flex flex-col justify-center items-center text-center">
-        <MessageSquare className="text-slate-600 mb-4" size={48} />
-        <p className="text-slate-400 max-w-sm">
-          Ask me anything about your current portfolio or Bangladesh investment laws.
+    <div className="glass card" role="region" aria-label="AI Portfolio Advisor">
+      <div style={{ marginBottom: 'var(--space-6)' }}>
+        <h3 className="text-lg font-bold flex items-center gap-2">
+          <Sparkles className="text-emerald-400" size={20} aria-hidden="true" />
+          AI Advisor (Claude Powered)
+        </h3>
+        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)', marginTop: 4 }}>
+          Get personalized insights on your Bangladesh investment portfolio
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-6">
-        {suggestions.map(s => (
+      <div 
+        className="empty-state"
+        style={{
+          background: 'rgba(15, 23, 42, 0.4)',
+          borderRadius: 'var(--radius-lg)',
+          padding: 'var(--space-6)',
+          marginBottom: 'var(--space-6)',
+          border: '1px solid var(--glass-border)',
+          minHeight: 180,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+        }}
+        aria-live="polite"
+      >
+        <MessageSquare style={{ color: 'var(--text-tertiary)', marginBottom: 'var(--space-4)' }} size={42} aria-hidden="true" />
+        <p style={{ color: 'var(--text-secondary)', maxWidth: 300, fontSize: 'var(--text-sm)' }}>
+          Ask me anything about your current portfolio or NBR tax laws.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap gap-2 mb-6" role="group" aria-label="Suggested questions">
+        {suggestions.map((s, idx) => (
           <button 
-            key={s} 
+            key={idx} 
             onClick={() => setQuery(s)}
-            className="px-3 py-1.5 rounded-full bg-slate-800 text-xs font-semibold text-slate-400 hover:bg-slate-700 transition-all border border-slate-700/50"
+            className="btn"
+            style={{
+              padding: '0.375rem 0.875rem',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: 'var(--radius-full)',
+              color: 'var(--text-secondary)',
+              fontSize: 'var(--text-xs)',
+              fontWeight: 600,
+            }}
           >
             {s}
           </button>
         ))}
       </div>
 
-      <div className="relative">
+      <form 
+        onSubmit={(e) => { e.preventDefault(); /* Mock submit */ setQuery(''); }}
+        className="relative"
+      >
+        <label htmlFor="ai-query" className="sr-only">Ask the AI advisor</label>
         <input
+          id="ai-query"
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Type your question..."
-          className="w-full bg-slate-900/80 border border-slate-700 rounded-lg py-4 pl-4 pr-16 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+          className="form-input"
+          style={{
+            paddingRight: '3.5rem',
+            paddingTop: '1rem',
+            paddingBottom: '1rem',
+          }}
         />
-        <button className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-emerald-500 rounded-md flex items-center justify-center hover:bg-emerald-600 transition-all">
-          <Send size={18} className="text-white" />
+        <button 
+          type="submit"
+          className="btn btn-primary"
+          style={{
+            position: 'absolute',
+            right: 6,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: 32,
+            height: 32,
+            padding: 0,
+            borderRadius: 'var(--radius-md)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          aria-label="Send question"
+          disabled={!query.trim()}
+        >
+          <Send size={16} />
         </button>
-      </div>
+      </form>
       
-      <p className="mt-4 text-[10px] text-slate-600 font-bold uppercase tracking-widest text-center">
-        Powered by Claude-3.5-Sonnet
+      <p style={{ marginTop: 'var(--space-4)', fontSize: '0.65rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', textAlign: 'center' }}>
+        Powered by Claude 3.5 Sonnet
       </p>
     </div>
   );

@@ -1,70 +1,104 @@
 import React from 'react';
 import { instruments } from '../data/instruments';
-import { formatPercent } from '../utils/format';
+
+const RISK_STYLES = {
+  'very-low': { bg: 'var(--risk-vlow-bg)', text: 'var(--risk-vlow-text)' },
+  'low':      { bg: 'var(--risk-low-bg)',  text: 'var(--risk-low-text)' },
+  'moderate': { bg: 'var(--risk-mod-bg)',  text: 'var(--risk-mod-text)' },
+  'high':     { bg: 'var(--risk-high-bg)', text: 'var(--risk-high-text)' },
+};
+
+const LIQUIDITY_BARS = {
+  'very-high': 5,
+  'high': 4,
+  'moderate': 3,
+  'low': 2,
+  'very-low': 1,
+};
+
+function LiquidityIndicator({ level }) {
+  const bars = LIQUIDITY_BARS[level] || 3;
+  return (
+    <div className="flex items-center gap-1" aria-label={`Liquidity: ${level?.replace('-', ' ')}`}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div
+          key={i}
+          style={{
+            width: 4,
+            height: 10 + i * 2,
+            borderRadius: 2,
+            background: i < bars ? 'var(--primary)' : 'rgba(255,255,255,0.08)',
+            transition: 'background var(--transition-fast)',
+          }}
+        />
+      ))}
+      <span style={{ marginLeft: 6, fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', textTransform: 'capitalize' }}>
+        {level?.replace('-', ' ')}
+      </span>
+    </div>
+  );
+}
 
 export default function InstrumentTable() {
-  const getRiskBadge = (risk) => {
-    switch (risk) {
-      case 'very-low': return 'var(--risk-vlow-bg)';
-      case 'low': return 'var(--risk-low-bg)';
-      case 'moderate': return 'var(--risk-mod-bg)';
-      case 'high': return 'var(--risk-high-bg)';
-      default: return 'var(--surface-light)';
-    }
-  };
-
-  const getRiskColor = (risk) => {
-    switch (risk) {
-      case 'very-low': return 'var(--risk-vlow-text)';
-      case 'low': return 'var(--risk-low-text)';
-      case 'moderate': return 'var(--risk-mod-text)';
-      case 'high': return 'var(--risk-high-text)';
-      default: return '#fff';
-    }
-  };
-
   return (
-    <div className="glass card overflow-hidden">
-      <h3 className="text-lg font-bold p-6 border-b border-slate-700/50">
-        Investment Instruments Comparison
-      </h3>
-      <div className="overflow-x-auto">
-        <table className="data-table">
+    <div className="glass card" style={{ padding: 0, overflow: 'hidden' }}>
+      <div style={{ padding: 'var(--space-6)', borderBottom: '1px solid var(--glass-border)' }}>
+        <h3 className="text-lg font-bold flex items-center gap-2">
+          <div style={{ width: 4, height: 24, background: 'var(--secondary)', borderRadius: 999 }} aria-hidden="true" />
+          Investment Instruments Comparison
+        </h3>
+        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)', marginTop: 4 }}>
+          Compare returns, risk, and liquidity across Bangladeshi instruments
+        </p>
+      </div>
+
+      <div style={{ overflowX: 'auto' }}>
+        <table className="data-table" role="table" aria-label="Investment instruments comparison table">
           <thead>
             <tr>
-              <th>Instrument</th>
-              <th>Category</th>
-              <th>Risk Level</th>
-              <th>ROI (Min-Max)</th>
-              <th>Liquidity</th>
+              <th scope="col">Instrument</th>
+              <th scope="col">Category</th>
+              <th scope="col">Risk Level</th>
+              <th scope="col">ROI (Min–Max)</th>
+              <th scope="col">Liquidity</th>
             </tr>
           </thead>
           <tbody>
-            {instruments.map(i => (
-              <tr key={i.id} className="hover:bg-slate-700/20 transition-colors">
-                <td>
-                  <div className="font-semibold">{i.name}</div>
-                  <div className="text-xs text-slate-500 bn">{i.namebn}</div>
-                </td>
-                <td>
-                  <span className="capitalize text-slate-400">{i.category}</span>
-                </td>
-                <td>
-                  <span 
-                    className="badge" 
-                    style={{ backgroundColor: getRiskBadge(i.riskLevel), color: getRiskColor(i.riskLevel) }}
-                  >
-                    {i.riskLevel.replace('-', ' ')}
-                  </span>
-                </td>
-                <td className="font-mono text-emerald-400 font-bold">
-                  {i.roiLabel}
-                </td>
-                <td className="text-slate-400">
-                  {i.liquidityLabel}
-                </td>
-              </tr>
-            ))}
+            {instruments.map(instr => {
+              const risk = RISK_STYLES[instr.riskLevel] || { bg: 'var(--surface-light)', text: '#fff' };
+              return (
+                <tr key={instr.id}>
+                  <td>
+                    <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{instr.name}</div>
+                    {instr.namebn && (
+                      <div className="bn" style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginTop: 2 }}>
+                        {instr.namebn}
+                      </div>
+                    )}
+                  </td>
+                  <td>
+                    <span style={{ color: 'var(--text-secondary)', textTransform: 'capitalize' }}>{instr.category}</span>
+                  </td>
+                  <td>
+                    <span
+                      className="badge"
+                      style={{ backgroundColor: risk.bg, color: risk.text }}
+                      aria-label={`Risk: ${instr.riskLevel?.replace('-', ' ')}`}
+                    >
+                      {instr.riskLevel?.replace('-', ' ')}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="tnum" style={{ fontWeight: 700, color: 'var(--primary-light)' }}>
+                      {instr.roiLabel}
+                    </span>
+                  </td>
+                  <td>
+                    <LiquidityIndicator level={instr.liquidityLabel?.toLowerCase()?.replace(' ', '-')} />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

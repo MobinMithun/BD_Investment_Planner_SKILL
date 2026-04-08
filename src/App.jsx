@@ -7,6 +7,7 @@ import InstrumentTable from './components/InstrumentTable';
 import TaxRebateTable from './components/TaxRebateTable';
 import GuidelineDetail from './components/GuidelineDetail';
 import AIAdvisor from './components/AIAdvisor';
+import MoneyBackground from './components/MoneyBackground';
 import { usePortfolio } from './hooks/usePortfolio';
 import { useTaxCalc } from './hooks/useTaxCalc';
 import { Download, PieChart, Info, Landmark } from 'lucide-react';
@@ -30,10 +31,12 @@ function App() {
   const { estimatedRebate } = useTaxCalc(totalAmount, allocations);
 
   return (
-    <div style={{ minHeight: '100dvh', paddingBottom: 'var(--space-20)' }}>
+    <div style={{ minHeight: '100dvh', paddingBottom: 'var(--space-20)', position: 'relative' }}>
+      {/* ── Money flying background ── */}
+      <MoneyBackground />
 
       {/* ── Sticky Header ── */}
-      <header className="site-header" role="banner">
+      <header className="site-header" role="banner" style={{ position: 'relative', zIndex: 10 }}>
         <div style={{ maxWidth: 1440, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           {/* Brand */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -73,7 +76,7 @@ function App() {
       </header>
 
       {/* ── Main Content ── */}
-      <main id="main-content" role="main">
+      <main id="main-content" role="main" style={{ position: 'relative', zIndex: 1 }}>
         <div className="dashboard-grid">
 
           {/* Input & Metrics */}
@@ -207,6 +210,37 @@ function App() {
                 {link.label} ↗
               </a>
             ))}
+          </div>
+
+          {/* GitHub */}
+          <div style={{ marginTop: 'var(--space-6)', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}>
+            <a
+              href="https://github.com/mobinmithun"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                fontSize: 'var(--text-sm)',
+                color: 'var(--text-secondary)',
+                fontWeight: 600,
+                textDecoration: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: 'var(--radius-full)',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                transition: 'all 150ms ease',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#f1f5f9'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+              aria-label="Visit mobinmithun on GitHub"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+              mobinmithun
+            </a>
           </div>
         </div>
       </footer>
