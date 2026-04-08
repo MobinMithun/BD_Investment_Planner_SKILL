@@ -8,9 +8,12 @@ import TaxRebateTable from './components/TaxRebateTable';
 import GuidelineDetail from './components/GuidelineDetail';
 import AIAdvisor from './components/AIAdvisor';
 import MoneyBackground from './components/MoneyBackground';
+import MusicPlayer from './components/MusicPlayer';
 import { usePortfolio } from './hooks/usePortfolio';
 import { useTaxCalc } from './hooks/useTaxCalc';
-import { Download, PieChart, Info, Landmark } from 'lucide-react';
+import { Download, PieChart, Info, Landmark, Loader2 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const TABS = [
   { id: 'simulator',   label: 'Simulator',   icon: <PieChart size={16} aria-hidden="true" /> },
@@ -29,6 +32,34 @@ function App() {
   } = usePortfolio();
 
   const { estimatedRebate } = useTaxCalc(totalAmount, allocations);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportToPDF = async () => {
+    setIsExporting(true);
+    try {
+      const element = document.getElementById('main-content');
+      if (!element) return;
+      
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        backgroundColor: '#070d1a',
+        useCORS: true,
+        logging: false
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('BD_Investment_Plan.pdf');
+    } catch (error) {
+      console.error('Failed to export PDF:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <div style={{ minHeight: '100dvh', paddingBottom: 'var(--space-20)', position: 'relative' }}>
@@ -63,15 +94,21 @@ function App() {
             </div>
           </div>
 
-          {/* Export button */}
-          <button
-            className="btn btn-primary"
-            aria-label="Export your investment plan as PDF"
-            style={{ gap: '0.5rem' }}
-          >
-            <Download size={15} aria-hidden="true" />
-            Export Plan
-          </button>
+          {/* Controls Right */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <MusicPlayer />
+            {/* Export button */}
+            <button
+              className="btn btn-primary"
+              aria-label="Export your investment plan as PDF"
+              style={{ gap: '0.5rem', opacity: isExporting ? 0.7 : 1, cursor: isExporting ? 'wait' : 'pointer' }}
+              onClick={handleExportToPDF}
+              disabled={isExporting}
+            >
+              {isExporting ? <Loader2 size={15} className="spin" aria-hidden="true" /> : <Download size={15} aria-hidden="true" />}
+              {isExporting ? 'Exporting...' : 'Export Plan'}
+            </button>
+          </div>
         </div>
       </header>
 

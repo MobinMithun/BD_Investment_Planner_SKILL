@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 
 /* ─── seeded pseudo-random so SSR is stable ─── */
 function seededRand(seed) {
@@ -92,6 +92,16 @@ export default function MoneyBackground() {
   const particleCount = 40;
   const billCount = 20;
 
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+
+  useEffect(() => {
+    const handleMusicState = (e) => {
+      setIsMusicPlaying(e.detail.isPlaying);
+    };
+    window.addEventListener('music-play-state', handleMusicState);
+    return () => window.removeEventListener('music-play-state', handleMusicState);
+  }, []);
+
   return (
     <>
       {/* ─── Keyframe injection ─── */}
@@ -170,7 +180,31 @@ export default function MoneyBackground() {
           pointerEvents: 'none',
         }}
       >
-        {/* Radial pulse glows */}
+        {/* Full screen pulsing glow reacting to real-time mic bass analysis */}
+        <div className="mic-beat-overlay" style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'radial-gradient(circle at 50% 50%, rgba(16,235,140,0.9) 0%, rgba(16,185,129,0.3) 30%, transparent 75%)',
+          willChange: 'opacity, transform',
+        }} />
+
+        <style>{`
+          .mic-beat-overlay {
+            opacity: calc(0.01 + (var(--beat-level, 0) * 0.8));
+            transform: scale(calc(1 + (var(--beat-level, 0) * 0.25)));
+            /* Add subtle hue rotation during heavy bass hits */
+            filter: hue-rotate(calc(var(--beat-level, 0) * -30deg));
+          }
+          .beat-breathe {
+            transform: scale(calc(1 + (var(--beat-level, 0) * 0.06)));
+            will-change: transform;
+            width: 100%; height: 100%; position: absolute;
+          }
+        `}</style>
+
+        {/* Global wrapper so the actual background particles scale slightly with the beat */}
+        <div className="beat-breathe">
+            {/* Radial pulse glows */}
         <div style={{
           position: 'absolute',
           width: 600, height: 600,
@@ -203,7 +237,11 @@ export default function MoneyBackground() {
         {Array.from({ length: billCount }, (_, i) => (
           <BillStreak key={`b-${i}`} index={i} />
         ))}
+        
+        </div>
+        {/* end beat-breathe */}
       </div>
+      {/* end container layer */}
     </>
   );
 }
