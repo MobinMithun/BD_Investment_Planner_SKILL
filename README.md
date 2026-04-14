@@ -1,68 +1,75 @@
-# Bangladesh Investment Planner 🇧🇩 💸
+# Bangladesh Investment Planner 🇧 💸
 
-A premium, highly interactive dashboard designed for the Bangladesh market, allowing users to strategize investments, calculate ROIs, and visualize long-term financial growth. 
+> **Also available as a [ClawHub Skill](https://skills.sh)** — import with: `skills add mobinmithun/bd-investment-planner`
 
-![Screenshot of the App](./media/Screenshot_8-4-2026_14547_localhost.jpeg)
+A premium, interactive investment simulator built for Bangladeshi investors. Strategize, compare instruments, calculate ROIs, and visualize long-term financial growth — all in a gorgeous glassmorphic UI.
+
+![Screenshot](./media/Screenshot_8-4-2026_14547_localhost.jpeg)
 
 ## ✨ Features
 
-* **High-End UI/UX**: A gorgeous glassmorphism design with immersive background animations.
-* **Real-time Audio Visualizer**: Click "Mic Sync" to make the background and floating money particles dynamically scale and pulse to the ambient bass/volume in your room using the Web Audio API.
-* **Comprehensive BD Instruments**: Compare Sanchaypatra, FDRs, Dhaka Stock Exchange (DSE) stocks, Real Estate, Gold, and modern Agrotech startups (iFarmer, WeGro).
-* **Tax Rebate Calculator**: Ensure tax-efficient investments via government-approved instruments. 
-* **Export Strategy**: Download your current portfolio projection cleanly as a PDF securely generated on-client using `html2canvas` and `jsPDF`.
-* **AI Advisor Ready**: Set your `VITE_ANTHROPIC_API_KEY` to simulate smart financial advice.
+- **Portfolio Health Dashboard** — 5 scored gauges (Diversification, Income Strength, Tax Efficiency, Liquidity, Risk-Adjusted Grade A+→D)
+- **Allocation Donut** — CSS conic-gradient ring chart with live legend
+- **Bucket Breakdown** — Expandable list-view table showing instruments, returns, and badges per risk bucket
+- **Income Timeline** — 5-year passive income projection with monthly/yearly toggle
+- **Smart Insights** — Auto-generated tips based on your allocation analysis
+- **17 BD Instruments** — Sanchaypatra, FDR, DSE stocks, mutual funds, T-bonds, iFarmer, WeGro, gold, REITs, DPS
+- **Tax Rebate Calculator** — FY 2024-25 NBR rules built-in
+- **PDF Export** — Download your portfolio plan as a PDF
+- **Mic Beat Sync** — Background pulses to ambient music
+- **Bilingual UI** — Bengali instrument names alongside English
 
 ## 🛠️ Tech Stack
 
-* **Core**: React.js 18 + Vite
-* **Styling**: Vanilla CSS with comprehensive CSS Variables for dynamic state handling.
-* **Visualization**: `recharts` for rich line and area charts.
-* **Audio Interactivity**: Native browser `Web Audio API` for microphone input analysis.
-* **Exporting**: `html2canvas` and `jspdf`.
-* **Icons**: `lucide-react`.
+- **React 18** + Vite
+- **Chart.js 4** + `react-chartjs-2`
+- **jsPDF** + `html2canvas` for PDF export
+- **Lucide React** for icons
+- **CSS Variables** + glassmorphism design tokens
 
-## 🚀 Quick Start Guide
+## 🚀 Quick Start
 
-Follow these simple steps to run this application locally on your machine.
+```bash
+npm install
+npm run dev     # → http://localhost:5173
+npm run build   # Production build in dist/
+```
 
-### Prerequisites
+## 📐 Architecture
 
-Ensure you have **Node.js** (v16.0 or higher) and **npm** installed on your machine. If not, download and install Node from [their official site](https://nodejs.org/).
+```
+src/
+├── App.jsx                     # Root with tab navigation
+├── hooks/
+│   ├── usePortfolio.js         # State + 5-score engine
+│   └── useTaxCalc.js           # Tax rebate computation
+├── components/
+│   ├── PortfolioScoreCards.jsx # 5 scored gauge cards
+│   ├── AllocationDonut.jsx     # CSS donut chart
+│   ├── BucketCards.jsx         # List-view bucket table
+│   ├── IncomeTimeline.jsx      # Passive income bars
+│   ├── PortfolioInsights.jsx   # Auto-generated tips
+│   └── ... (12 more)
+├── data/
+│   ├── instruments.js          # 17 BD instruments
+│   ├── profiles.js             # 6 risk profiles
+│   └── tax-rules.js            # FY 2024-25 rules
+└── styles/
+    ├── tokens.css              # Design tokens
+    └── components.css          # Component styles
+```
 
-### Installation
+## 🧠 Skill
 
-1. **Clone the repository** (if you haven't already):
-   ```bash
-   git clone <your-repo-link-here>
-   cd BD_Investment_Planner_SKILL
-   ```
+This project is also a **publishable ClawHub skill**. The [`SKILL.md`](./SKILL.md) at the project root contains the full skill definition including:
 
-2. **Install all dependencies**:
-   ```bash
-   npm install
-   ```
-
-3. **Configure Environment variables**. Create a `.env` file in the root directory (optional but recommended for full AI access):
-   ```env
-   VITE_ANTHROPIC_API_KEY=your_anthropic_key_here
-   ```
-
-4. **Start the Development Server**:
-   ```bash
-   npm run dev
-   ```
-
-5. **Open the App**:
-   Navigate to `http://localhost:5173` in your favorite web browser (we recommend Chrome or Edge).
-
-## 🪩 Testing the Mic Sync Visualizer
-
-1. Click on the **Mic Beat Sync** button in the top right.
-2. Allow microphone permissions in your browser.
-3. Play music on your loud speakers or speak directly into your microphone.
-4. Watch the entire background pulse, shift colors, and floating money expand instantly to the beat amplitude. 
+- System architecture overview
+- Data model schemas
+- Component quick reference
+- Extension guide (add instruments, profiles, scores)
+- ROI rates reference table
+- Design system documentation
 
 ## 📝 License
 
-Designed and developed exclusively for the Bangladesh Investment ecosystem. Open-sourced under the MIT license.
+MIT — built for the Bangladesh investment ecosystem.
