@@ -1,6 +1,9 @@
 # Bangladesh Investment Planner 🇧 💸
 
-> **Also available as a [ClawHub Skill](https://skills.sh)** — import with: `skills add mobinmithun/bd-investment-planner`
+> **Install as a skill:**
+> ```bash
+> npx skills add https://github.com/MobinMithun/BD_Investment_Planner_SKILL --BD_Investment_Planner_SKILL
+> ```
 
 A premium, interactive investment simulator built for Bangladeshi investors. Strategize, compare instruments, calculate ROIs, and visualize long-term financial growth — all in a gorgeous glassmorphic UI.
 
