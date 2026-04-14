@@ -1,8 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Send, Sparkles, MessageSquare } from 'lucide-react';
 
 export default function AIAdvisor() {
   const [query, setQuery] = useState('');
+
+  // Listen for prompt injections from external components (e.g. Instrument table add buttons)
+  useEffect(() => {
+    const handleAiPrompt = (e) => {
+      if (e.detail) {
+        setQuery(e.detail);
+        // Put focus on input
+        const inputBase = document.getElementById('ai-query');
+        if (inputBase) inputBase.focus();
+      }
+    };
+    
+    window.addEventListener('ai-prompt', handleAiPrompt);
+    return () => window.removeEventListener('ai-prompt', handleAiPrompt);
+  }, []);
   
   const suggestions = [
     "Is my allocation right for my age?",

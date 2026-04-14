@@ -12,6 +12,17 @@ export function usePortfolio() {
     cash: 25
   });
 
+  const [portfolioItems, setPortfolioItems] = useState([]);
+
+  const addPortfolioItem = (instrumentId, amount) => {
+    setPortfolioItems(prev => [...prev, { id: Date.now().toString(), instrumentId, amount }]);
+  };
+
+  const removePortfolioItem = (id) => {
+    setPortfolioItems(prev => prev.filter(item => item.id !== id));
+  };
+
+
   // When profile changes, update allocations
   useEffect(() => {
     const profile = profiles.find(p => p.id === profileId);
@@ -103,6 +114,9 @@ export function usePortfolio() {
     setProfileId,
     allocations,
     updateAllocation,
-    computed
+    computed,
+    portfolioItems,
+    addPortfolioItem,
+    removePortfolioItem
   };
 }

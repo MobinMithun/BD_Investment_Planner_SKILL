@@ -3,12 +3,14 @@ import AmountInput from './components/AmountInput';
 import AllocationSliders from './components/AllocationSliders';
 import MetricSummary from './components/MetricSummary';
 import ROIChart from './components/ROIChart';
-import InstrumentTable from './components/InstrumentTable';
+import InvestmentUniverseTable from './components/InvestmentUniverseTable';
+import InvestmentBreakdownTable from './components/InvestmentBreakdownTable';
 import TaxRebateTable from './components/TaxRebateTable';
 import GuidelineDetail from './components/GuidelineDetail';
 import AIAdvisor from './components/AIAdvisor';
 import MoneyBackground from './components/MoneyBackground';
 import MusicPlayer from './components/MusicPlayer';
+import LiquidityTierMap from './components/LiquidityTierMap';
 import { usePortfolio } from './hooks/usePortfolio';
 import { useTaxCalc } from './hooks/useTaxCalc';
 import { Download, PieChart, Info, Landmark, Loader2 } from 'lucide-react';
@@ -29,6 +31,9 @@ function App() {
     profileId, setProfileId,
     allocations, updateAllocation,
     computed,
+    portfolioItems,
+    addPortfolioItem,
+    removePortfolioItem
   } = usePortfolio();
 
   const { estimatedRebate } = useTaxCalc(totalAmount, allocations);
@@ -178,6 +183,9 @@ function App() {
                 <TaxRebateTable estimatedRebate={estimatedRebate} />
               </div>
               <div className="col-span-12">
+                <LiquidityTierMap />
+              </div>
+              <div className="col-span-12">
                 <AIAdvisor />
               </div>
             </>
@@ -189,8 +197,15 @@ function App() {
               role="tabpanel"
               aria-labelledby="tab-instruments"
               className="col-span-12"
+              style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}
             >
-              <InstrumentTable />
+              <InvestmentUniverseTable onAdd={addPortfolioItem} />
+              <InvestmentBreakdownTable 
+                allocations={allocations} 
+                computed={computed} 
+                portfolioItems={portfolioItems}
+                onRemove={removePortfolioItem}
+              />
             </div>
           )}
 
