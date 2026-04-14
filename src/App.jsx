@@ -18,9 +18,9 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 const TABS = [
-  { id: 'simulator',   label: 'Simulator',   icon: <PieChart size={16} aria-hidden="true" /> },
+  { id: 'simulator', label: 'Simulator', icon: <PieChart size={16} aria-hidden="true" /> },
   { id: 'instruments', label: 'Instruments', icon: <Landmark size={16} aria-hidden="true" /> },
-  { id: 'guidelines',  label: 'Guidelines',  icon: <Info size={16} aria-hidden="true" /> },
+  { id: 'guidelines', label: 'Guidelines', icon: <Info size={16} aria-hidden="true" /> },
 ];
 
 function App() {
@@ -31,6 +31,7 @@ function App() {
     profileId, setProfileId,
     allocations, updateAllocation,
     computed,
+    portfolioScores,
     portfolioItems,
     addPortfolioItem,
     removePortfolioItem
@@ -44,19 +45,19 @@ function App() {
     try {
       const element = document.getElementById('main-content');
       if (!element) return;
-      
+
       const canvas = await html2canvas(element, {
         scale: 2,
         backgroundColor: '#070d1a',
         useCORS: true,
         logging: false
       });
-      
+
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
+
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save('BD_Investment_Plan.pdf');
     } catch (error) {
@@ -200,11 +201,12 @@ function App() {
               style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}
             >
               <InvestmentUniverseTable onAdd={addPortfolioItem} />
-              <InvestmentBreakdownTable 
-                allocations={allocations} 
-                computed={computed} 
+              <InvestmentBreakdownTable
+                allocations={allocations}
+                computed={computed}
                 portfolioItems={portfolioItems}
                 onRemove={removePortfolioItem}
+                portfolioScores={portfolioScores}
               />
             </div>
           )}
@@ -289,7 +291,7 @@ function App() {
               aria-label="Visit mobinmithun on GitHub"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
               </svg>
               mobinmithun
             </a>

@@ -1,22 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { profiles } from '../data/profiles';
 
 const PRESETS = [
-  { value: 100000,  label: '1L' },
-  { value: 500000,  label: '5L' },
+  { value: 100000, label: '1L' },
+  { value: 500000, label: '5L' },
   { value: 1000000, label: '10L' },
   { value: 2500000, label: '25L' },
   { value: 5000000, label: '50L' },
 ];
 
 function formatDisplay(amount) {
+  if (amount <= 0) return '৳0';
   if (amount >= 10000000) return `${(amount / 10000000).toFixed(1)} Cr`;
-  if (amount >= 100000)   return `${(amount / 100000).toFixed(1)} Lakh`;
+  if (amount >= 100000) return `${(amount / 100000).toFixed(1)} Lakh`;
   return `৳${amount.toLocaleString('en-BD')}`;
 }
 
 export default function AmountInput({ totalAmount, setTotalAmount, profileId, setProfileId }) {
   const activeProfile = profiles.find(p => p.id === profileId);
+  const [draft, setDraft] = useState(String(totalAmount));
+
+  // Keep draft in sync when totalAmount changes from outside (e.g. presets)
+  React.useEffect(() => {
+    setDraft(String(totalAmount));
+  }, [totalAmount]);
+
+  const handleBlur = () => {
+    let val = parseInt(draft.replace(/\D/g, ''), 10);
+    if (isNaN(val) || val < 0) val = 0;
+    if (val > 100000000) val = 100000000;
+    setDraft(String(val));
+    setTotalAmount(val);
+  };
+
+  const handleChange = (e) => {
+    const raw = e.target.value;
+    // Allow digits only (plus empty string for backspacing)
+    const cleaned = raw.replace(/[^\d]/g, '');
+    setDraft(cleaned);
+    const num = parseInt(cleaned, 10);
+    if (!isNaN(num) && num >= 0) {
+      setTotalAmount(num);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    // Allow: Backspace, Delete, Tab, Escape, Enter, Arrow keys, Home, End
+    const allowed = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'Home', 'End', 'ArrowLeft', 'ArrowRight'];
+    if (allowed.includes(e.key) || (e.key === 'a' && e.ctrlKey)) return;
+    // Allow digits only
+    if (e.key < '0' || e.key > '9') e.preventDefault();
+  };
 
   return (
     <div className="glass card mb-6" role="region" aria-label="Investment configuration">
@@ -40,12 +74,12 @@ export default function AmountInput({ totalAmount, setTotalAmount, profileId, se
             </span>
             <input
               id="investment-amount"
-              type="number"
-              value={totalAmount}
-              min={10000}
-              max={100000000}
-              step={10000}
-              onChange={(e) => setTotalAmount(Number(e.target.value))}
+              type="text"
+              inputMode="numeric"
+              value={draft}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
               aria-label="Total investment amount in Bangladeshi Taka"
               aria-describedby="amount-hint"
               className="form-input form-input-number"
